@@ -55,4 +55,7 @@ return require('packer').startup(function(use)
     },
     tag = 'nightly' -- optional, updated every week. (see issue #1193)
   }
+
+  use('airblade/vim-gitgutter')
+  use('vim-airline/vim-airline')
 end)
