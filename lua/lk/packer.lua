@@ -49,7 +49,7 @@ return require('packer').startup(function(use)
 	}
 
   use {
-    'nvim-tree/nvim-tree.lua',
+  'nvim-tree/nvim-tree.lua',
     requires = {
       'nvim-tree/nvim-web-devicons', -- optional, for file icons
     },
@@ -58,4 +58,17 @@ return require('packer').startup(function(use)
 
   use('airblade/vim-gitgutter')
   use('vim-airline/vim-airline')
+  use("petertriho/nvim-scrollbar")
+
+  use {
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
+    config = function()
+      require("trouble").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
 end)
