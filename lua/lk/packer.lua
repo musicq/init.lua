@@ -73,4 +73,5 @@ return require('packer').startup(function(use)
   }
 
   use('prettier/vim-prettier')
+  -- use('dense-analysis/ale')
 end)
