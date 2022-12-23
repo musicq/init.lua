@@ -71,4 +71,6 @@ return require('packer').startup(function(use)
       }
     end
   }
+
+  use('prettier/vim-prettier')
 end)

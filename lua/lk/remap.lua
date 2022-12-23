@@ -47,3 +47,7 @@ vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",
 vim.keymap.set("n", "gR", "<cmd>TroubleToggle lsp_references<cr>",
   {silent = true, noremap = true}
 )
+
+vim.keymap.set("n", "<leader>f", "<cmd>Prettier<cr>",
+  {silent = true, noremap = true}
+)
