@@ -1,7 +1,7 @@
 vim.g.mapleader = " "
 
-vim.keymap.set("n", "<C-b>", vim.cmd.NvimTreeToggle)
-vim.keymap.set("n", "<leader>nl", vim.cmd.nohlsearch)
+vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle)
+vim.keymap.set("n", "<leader>h", vim.cmd.nohlsearch)
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
@@ -26,7 +26,6 @@ vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- trouble
 vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>",
@@ -48,6 +47,6 @@ vim.keymap.set("n", "gR", "<cmd>TroubleToggle lsp_references<cr>",
   {silent = true, noremap = true}
 )
 
-vim.keymap.set("n", "<leader>f", "<cmd>Prettier<cr>",
+vim.keymap.set("n", "<M-S-f>", "<cmd>Prettier<cr>",
   {silent = true, noremap = true}
 )
