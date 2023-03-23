@@ -75,4 +75,6 @@ return require('packer').startup(function(use)
   use 'Mofiqul/vscode.nvim'
 
   use 'zivyangll/git-blame.vim'
+
+  use "lukas-reineke/indent-blankline.nvim"
 end)
