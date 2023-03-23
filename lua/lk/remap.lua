@@ -50,6 +50,4 @@ vim.keymap.set("n", "<M-S-f>", "<cmd>Prettier<cr>",
   {silent = true, noremap = true}
 )
 
--- nnoremap <Leader>s :<C-u>call gitblame#echo()<CR>
-
-vim.keymap.set("n", "<leader>s", "<cmd>call gitblame#echo()<cr>")
+vim.keymap.set("n", "<leader>l", "<cmd>call gitblame#echo()<cr>")
