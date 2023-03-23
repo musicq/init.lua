@@ -66,25 +66,13 @@ return require('packer').startup(function(use)
   use('prettier/vim-prettier')
   use('dense-analysis/ale')
 
-  use('akinsho/toggleterm.nvim')
-  -- use({
-  --   "catppuccin/nvim",
-  --   as = "catppuccin",
-  --   config = function()
-  --     vim.cmd('colorscheme catppuccin')
-  --   end
-  -- })
-
   use {"akinsho/toggleterm.nvim", tag = '*', config = function()
     require("toggleterm").setup()
   end}
 
   use('RRethy/vim-illuminate')
 
-  use({
-    'projekt0n/github-nvim-theme', tag = 'v0.0.7',
-    config = function()
-      require('github-theme').setup({ })
-    end
-  })
+  use 'Mofiqul/vscode.nvim'
+
+  use 'zivyangll/git-blame.vim'
 end)
