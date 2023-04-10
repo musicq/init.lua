@@ -1,4 +1,5 @@
 local lsp = require('lsp-zero')
+local cmp = require('cmp')
 
 lsp.preset('recommended')
 lsp.setup()
@@ -32,6 +33,12 @@ lsp.set_preferences({
     warn = '▲',
     hint = '⚑',
     info = ''
+  }
+})
+
+cmp.setup({
+  mapping = {
+    ['<Tab>'] = cmp.mapping.confirm({select = true}),
   }
 })
 
