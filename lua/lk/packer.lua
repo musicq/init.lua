@@ -79,4 +79,9 @@ return require('packer').startup(function(use)
   use "lukas-reineke/indent-blankline.nvim"
 
   use "terrortylor/nvim-comment"
+
+  use {
+    'windwp/nvim-autopairs',
+    config = function() require("nvim-autopairs").setup {} end
+  }
 end)
