@@ -7,3 +7,5 @@ function ColorMyPencils(color)
 end
 
 ColorMyPencils()
+
+vim.g.airline_theme = "base16_material_darker"

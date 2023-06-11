@@ -49,6 +49,9 @@ return require('packer').startup(function(use)
 
   use('airblade/vim-gitgutter')
   use('vim-airline/vim-airline')
+  use {
+    'vim-airline/vim-airline-themes',
+  }
   use("petertriho/nvim-scrollbar")
 
   use {
