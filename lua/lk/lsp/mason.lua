@@ -1,11 +1,4 @@
-local servers = {
-  "tsserver",
-  "rust_analyzer",
-  "gopls",
-  "lua_ls",
-  "jsonls",
-  "eslint",
-}
+local get_servers = require("mason-lspconfig").get_installed_servers
 
 local settings = {
   ui = {
@@ -28,7 +21,7 @@ end
 
 local opts = {}
 
-for _, server in pairs(servers) do
+for _, server in pairs(get_servers()) do
   opts = {
     on_attach = require("lk.lsp.handlers").on_attach,
     capabilities = require("lk.lsp.handlers").capabilities,

@@ -93,9 +93,26 @@ cmp.setup({
       "i",
       "s",
     }),
+    ["<C-p>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_prev_item(select_opts)
+      else
+        cmp.complete()
+      end
+    end),
+
+    -- if completion menu is visible, go to the next item
+    -- else, trigger completion menu
+    ["<C-n>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_next_item(select_opts)
+      else
+        cmp.complete()
+      end
+    end),
   },
   formatting = {
-    fields = { "kind", "abbr", "menu" },
+    fields = { "abbr", "menu", "kind" },
     format = function(entry, vim_item)
       -- Kind icons
       vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
@@ -106,7 +123,8 @@ cmp.setup({
         luasnip = "[Snippet]",
         buffer = "[Buffer]",
         path = "[Path]",
-      })[entry.source.name]
+      })[entry.source.name] or entry.source.name
+
       return vim_item
     end,
   },
@@ -126,8 +144,6 @@ cmp.setup({
   },
   experimental = {
     ghost_text = false,
-    native_menu = false,
   },
 })
-
 
