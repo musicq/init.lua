@@ -134,11 +134,6 @@ _G.packer_plugins = {
     path = "/Users/kui.liang/.local/share/nvim/site/pack/packer/start/indent-blankline.nvim",
     url = "https://github.com/lukas-reineke/indent-blankline.nvim"
   },
-  ["lsp-zero.nvim"] = {
-    loaded = true,
-    path = "/Users/kui.liang/.local/share/nvim/site/pack/packer/start/lsp-zero.nvim",
-    url = "https://github.com/VonHeikemen/lsp-zero.nvim"
-  },
   ["lualine.nvim"] = {
     loaded = true,
     path = "/Users/kui.liang/.local/share/nvim/site/pack/packer/start/lualine.nvim",
@@ -243,6 +238,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/kui.liang/.local/share/nvim/site/pack/packer/start/toggleterm.nvim",
     url = "https://github.com/akinsho/toggleterm.nvim"
+  },
+  undotree = {
+    loaded = true,
+    path = "/Users/kui.liang/.local/share/nvim/site/pack/packer/start/undotree",
+    url = "https://github.com/mbbill/undotree"
   },
   ["vim-easymotion"] = {
     loaded = true,
