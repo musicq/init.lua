@@ -95,7 +95,7 @@ cmp.setup({
     }),
     ["<C-p>"] = cmp.mapping(function()
       if cmp.visible() then
-        cmp.select_prev_item(select_opts)
+        cmp.select_prev_item({ behavior = "select" })
       else
         cmp.complete()
       end
@@ -105,7 +105,7 @@ cmp.setup({
     -- else, trigger completion menu
     ["<C-n>"] = cmp.mapping(function()
       if cmp.visible() then
-        cmp.select_next_item(select_opts)
+        cmp.select_next_item({ behavior = "select" })
       else
         cmp.complete()
       end
@@ -146,4 +146,3 @@ cmp.setup({
     ghost_text = false,
   },
 })
-

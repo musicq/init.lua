@@ -1,5 +1,15 @@
 local get_servers = require("mason-lspconfig").get_installed_servers
 
+local ensured_languages = {
+  "prismals",
+  "rust_analyzer",
+  "jsonls",
+  "gopls",
+  "tsserver",
+  "lua_ls",
+  "eslint",
+}
+
 local settings = {
   ui = {
     border = "none",
@@ -10,7 +20,7 @@ local settings = {
 
 require("mason").setup(settings)
 require("mason-lspconfig").setup({
-  ensure_installed = servers,
+  ensure_installed = ensured_languages,
   automatic_installation = true,
 })
 

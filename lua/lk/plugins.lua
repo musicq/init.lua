@@ -58,7 +58,6 @@ return packer.startup(function(use)
   })
   use("williamboman/mason-lspconfig.nvim") -- simple to use language server installer
   use("jose-elias-alvarez/null-ls.nvim")  -- LSP diagnostics and code actions
-  use("mfussenegger/nvim-dap")            -- Debug Adapter Protocol
 
   -- cmp plugins
   use("hrsh7th/nvim-cmp")        -- The completion plugin
@@ -68,6 +67,20 @@ return packer.startup(function(use)
   use("saadparwaiz1/cmp_luasnip") -- snippet completions
   use("hrsh7th/cmp-nvim-lsp")
   use("hrsh7th/cmp-nvim-lua")
+
+  -- DAP
+  use("mfussenegger/nvim-dap") -- Debug Adapter Protocol
+  use("rcarriga/nvim-dap-ui")
+  use("theHamsta/nvim-dap-virtual-text")
+  use("simrat39/rust-tools.nvim")
+  use("leoluz/nvim-dap-go")
+  use("mxsdev/nvim-dap-vscode-js")
+  use({
+    -- Debug Adapter
+    "microsoft/vscode-js-debug",
+    opt = true,
+    run = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
+  })
 
   -- Telescope
   use("nvim-telescope/telescope.nvim")
