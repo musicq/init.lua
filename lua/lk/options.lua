@@ -23,7 +23,6 @@ local options = {
   updatetime = 50,
   colorcolumn = "80",
   cursorline = true,
-  guifont = "monospace:h17", -- the font used in graphical neovim applications
 }
 
 vim.opt.isfname:append("@-@")
@@ -31,3 +30,4 @@ vim.opt.isfname:append("@-@")
 for k, v in pairs(options) do
   vim.opt[k] = v
 end
+
