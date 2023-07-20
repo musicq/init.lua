@@ -27,7 +27,7 @@ local plugins = {
   "kyazdani42/nvim-tree.lua",
 
   -- theme
-  "musicq/adwaita.nvim",
+  "Mofiqul/adwaita.nvim",
 
   -- wakatime
   "wakatime/vim-wakatime",
