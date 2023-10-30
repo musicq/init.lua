@@ -23,8 +23,19 @@ local plugins = {
   "nvim-lua/popup.nvim",  -- An implementation of the Popup API from vim in Neovim
   "nvim-lua/plenary.nvim", -- Useful lua functions used ny lots of plugins
   "windwp/nvim-autopairs", -- Autopairs, integrates with both cmp and treesitter
-  "kyazdani42/nvim-web-devicons",
-  "kyazdani42/nvim-tree.lua",
+
+  -- nvim tree
+  {
+    "nvim-tree/nvim-tree.lua",
+    version = "*",
+    lazy = false,
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("nvim-tree").setup({})
+    end,
+  },
 
   -- theme
   "Mofiqul/adwaita.nvim",
@@ -58,12 +69,12 @@ local plugins = {
   "simrat39/rust-tools.nvim",
   "leoluz/nvim-dap-go",
   "mxsdev/nvim-dap-vscode-js",
-  {
-    -- Debug Adapter
-    "microsoft/vscode-js-debug",
-    lazy = true,
-    build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
-  },
+  -- {
+  --   -- Debug Adapter
+  --   "microsoft/vscode-js-debug",
+  --   lazy = true,
+  --   build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
+  -- },
 
   -- Telescope
   "nvim-telescope/telescope.nvim",
@@ -98,7 +109,8 @@ local plugins = {
 
   "ThePrimeagen/harpoon",
 
-  "lukas-reineke/indent-blankline.nvim",
+  { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
+
   "mbbill/undotree",
 }
 
