@@ -46,6 +46,9 @@ local kind_icons = {
 -- find more here: https://www.nerdfonts.com/cheat-sheet
 
 cmp.setup({
+  completion = {
+    completeopt = "menu,menuone,preview,noselect",
+  },
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body) -- For `luasnip` users.
@@ -128,13 +131,13 @@ cmp.setup({
       return vim_item
     end,
   },
-  sources = {
+  sources = cmp.config.sources({
     { name = "nvim_lsp" },
+    { name = "buffer" },
     { name = "nvim_lua" },
     { name = "luasnip" },
-    { name = "buffer" },
     { name = "path" },
-  },
+  }),
   confirm_opts = {
     behavior = cmp.ConfirmBehavior.Replace,
     select = false,
@@ -146,3 +149,4 @@ cmp.setup({
     ghost_text = false,
   },
 })
+
