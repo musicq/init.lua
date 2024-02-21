@@ -2,7 +2,6 @@ local get_servers = require("mason-lspconfig").get_installed_servers
 
 local ensured_languages = {
   "prismals",
-  "rust_analyzer",
   "jsonls",
   "gopls",
   "tsserver",

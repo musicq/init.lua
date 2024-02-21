@@ -18,7 +18,6 @@ vim.cmd([[
   autocmd BufWritePost lazy_plugins.lua source <afile> | Lazy sync
   augroup end
   ]])
-
 local plugins = {
   "nvim-lua/popup.nvim",  -- An implementation of the Popup API from vim in Neovim
   "nvim-lua/plenary.nvim", -- Useful lua functions used ny lots of plugins
@@ -112,6 +111,14 @@ local plugins = {
   { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
 
   "mbbill/undotree",
+
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^3', -- Recommended
+    ft = { 'rust' },
+  },
+
+  "easymotion/vim-easymotion"
 }
 
 require("lazy").setup(plugins)
