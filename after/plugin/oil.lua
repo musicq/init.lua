@@ -1,4 +1,6 @@
-require('oil').setup({
+local oil = require('oil')
+
+oil.setup({
   delete_to_trash = true,
   columns = {
     -- 'permissions',
@@ -31,4 +33,10 @@ require('oil').setup({
   },
 })
 
-vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+vim.keymap.set('n', '-', function()
+  oil.open()
+
+  vim.defer_fn(function()
+    vim.cmd [[ exe "normal \<c-p>" ]]
+  end, 80)
+end)
