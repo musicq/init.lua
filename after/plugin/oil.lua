@@ -37,6 +37,7 @@ vim.keymap.set('n', '-', function()
   oil.open()
 
   vim.defer_fn(function()
-    vim.cmd [[ exe "normal \<c-p>" ]]
-  end, 80)
+    --   vim.cmd [[ exe "normal \<c-p>" ]]
+    oil.select({ preview = true })
+  end, 50)
 end)
