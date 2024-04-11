@@ -78,4 +78,3 @@ cmp.setup({
     documentation = cmp.config.window.bordered(),
   },
 })
-
