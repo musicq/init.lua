@@ -18,7 +18,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-  "nvim-lua/popup.nvim",  -- An implementation of the Popup API from vim in Neovim
+  "nvim-lua/popup.nvim",   -- An implementation of the Popup API from vim in Neovim
   "nvim-lua/plenary.nvim", -- Useful lua functions used ny lots of plugins
   "windwp/nvim-autopairs", -- Autopairs, integrates with both cmp and treesitter
 
@@ -36,7 +36,7 @@ require('lazy').setup({
   { 'hrsh7th/cmp-nvim-lsp' },
   { 'hrsh7th/nvim-cmp' },
   { 'L3MON4D3/LuaSnip' },
-  "jose-elias-alvarez/null-ls.nvim",  -- LSP diagnostics and code actions
+  "jose-elias-alvarez/null-ls.nvim", -- LSP diagnostics and code actions
   {
     'mrcjkb/rustaceanvim',
     version = '^4', -- Recommended
@@ -68,7 +68,7 @@ require('lazy').setup({
   { "numToStr/Comment.nvim" }, -- Easily comment stuff
   { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
 
-   -- Status Bar
+  -- Status Bar
   "nvim-lualine/lualine.nvim",
 
   -- Git
@@ -94,4 +94,3 @@ require('lazy').setup({
 
   "easymotion/vim-easymotion"
 })
-
