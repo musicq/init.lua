@@ -1,4 +1,5 @@
 local oil = require('oil')
+local util = require('oil.util')
 
 oil.setup({
   delete_to_trash = true,
@@ -36,8 +37,7 @@ oil.setup({
 vim.keymap.set('n', '-', function()
   oil.open()
 
-  vim.defer_fn(function()
-    --   vim.cmd [[ exe "normal \<c-p>" ]]
+  util.run_after_load(0, function()
     oil.select({ preview = true })
-  end, 50)
+  end)
 end)
