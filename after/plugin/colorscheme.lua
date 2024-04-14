@@ -23,3 +23,7 @@ hl('TelescopeMultiSelection', { fg = colors.light_4, bg = colors.blue_7 })
 hl('TelescopeMatching', { fg = colors.light_4, bg = colors.blue_7, bold = true })
 hl('TelescopePromptPrefix', { fg = colors.light_4, bg = colors.blue_7, bold = true })
 
+-- set Illuminate style
+hl('IlluminatedWordText', { bg = colors.dark_3 })
+hl('IlluminatedWordRead', { bg = colors.dark_3 })
+hl('IlluminatedWordWrite', { bg = colors.dark_3 })
