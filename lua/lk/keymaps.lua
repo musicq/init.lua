@@ -20,6 +20,11 @@ keymap("v", "<leader>y", [["+y]], opts)
 keymap("n", "<leader>nl", ":nohlsearch<cr>", opts)
 keymap("n", "Y", "Vy", opts)
 
+keymap("i", "<c-h>", "<Left>", opts)
+keymap("i", "<c-l>", "<Right>", opts)
+keymap("i", "<c-j>", "<Down>", opts)
+keymap("i", "<c-k>", "<Up>", opts)
+
 -- keymap("n", "<a-h>", "^", opts)
 -- keymap("v", "<a-h>", "^", opts)
 -- keymap("n", "<a-l>", "g_", opts)
@@ -30,10 +35,10 @@ keymap("n", "<leader>sc", ":e $MYVIMRC<cr>", opts)
 keymap("n", "<leader>sv", ":source %<cr>", opts)
 
 -- Normal --
-keymap("n", "<c-h>", "<c-w>h", opts)
-keymap("n", "<c-l>", "<c-w>l", opts)
-keymap("n", "<c-k>", "<c-w>k", opts)
-keymap("n", "<c-j>", "<c-w>j", opts)
+keymap("n", "<m-h>", "<c-w>h", opts)
+keymap("n", "<m-l>", "<c-w>l", opts)
+keymap("n", "<m-k>", "<c-w>k", opts)
+keymap("n", "<m-j>", "<c-w>j", opts)
 
 -- Resize with arrows
 keymap("n", "<a-up>", ":resize +2<cr>", opts)
@@ -64,9 +69,10 @@ keymap("t", "<c-k>", "<c-\\><c-n><c-w>k", term_opts)
 keymap("t", "<c-l>", "<c-\\><c-n><c-w>l", term_opts)
 
 -- keymap("n", "<leader>f", "<cmd>Telescope find_files<cr>", opts)
-keymap("n", "<leader>f", "<cmd>lua require'telescope.builtin'.find_files()<cr>", opts)
-keymap("n", "<leader>gf", "<cmd>Telescope live_grep<cr>", opts)
-keymap("n", "<leader>sf", "<cmd>Telescope current_buffer_fuzzy_find<cr>", opts)
+keymap("n", "<leader>pf", "<cmd>lua require'telescope.builtin'.find_files()<cr>", opts)
+keymap("n", "<leader>pg", "<cmd>Telescope live_grep<cr>", opts)
+keymap("n", "<leader>bf", "<cmd>lua require'telescope.builtin'.buffers()<cr>", opts)
+-- keymap("n", "<leader>sf", "<cmd>Telescope current_buffer_fuzzy_find<cr>", opts)
 
 -- Nvimtree
 keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)

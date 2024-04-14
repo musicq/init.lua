@@ -1,4 +1,3 @@
-
 local options = {
   guicursor = "",
   number = true,
@@ -24,6 +23,8 @@ local options = {
   updatetime = 50,
   colorcolumn = "80",
   cursorline = true,
+  foldmethod = "indent",
+  foldenable = false
 }
 
 vim.opt.isfname:append("@-@")
