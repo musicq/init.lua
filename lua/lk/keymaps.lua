@@ -76,7 +76,7 @@ keymap("n", "<leader>bf", "<cmd>lua require'telescope.builtin'.buffers()<cr>", o
 
 -- Nvimtree
 keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
-keymap("n", "<M-S-f>", ":Format<cr>", opts)
+-- keymap("n", "<M-S-f>", ":Format<cr>", opts)
 
 -- Gitsigns
 keymap("n", "<leader>bl", ":Gitsigns blame_line<cr>", opts)

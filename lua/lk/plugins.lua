@@ -43,6 +43,18 @@ require('lazy').setup({
     ft = { 'rust' },
   },
 
+  -- formatter
+  {
+    'stevearc/conform.nvim',
+    event = { "BufReadPre", "BufNewFile" },
+  },
+
+  -- linter
+  {
+    "mfussenegger/nvim-lint",
+    event = { "BufReadPre", "BufNewFile" },
+  },
+
   -- file tree
   {
     'stevearc/oil.nvim',
