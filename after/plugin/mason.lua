@@ -15,7 +15,8 @@ require('mason-lspconfig').setup({
     "rust_analyzer",
     "tailwindcss",
     "tsserver",
-    "yamlls"
+    "yamlls",
+    "taplo"
   },
 
   handlers = {
