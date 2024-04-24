@@ -20,10 +20,8 @@ keymap("v", "<leader>y", [["+y]], opts)
 keymap("n", "<leader>nl", ":nohlsearch<cr>", opts)
 keymap("n", "Y", "Vy", opts)
 
-keymap("i", "<c-h>", "<Left>", opts)
-keymap("i", "<c-l>", "<Right>", opts)
-keymap("i", "<c-j>", "<Down>", opts)
-keymap("i", "<c-k>", "<Up>", opts)
+keymap("i", "<c-b>", "<Left>", opts)
+keymap("i", "<c-f>", "<Right>", opts)
 
 -- keymap("n", "<a-h>", "^", opts)
 -- keymap("v", "<a-h>", "^", opts)
@@ -86,4 +84,3 @@ keymap("n", "<leader>ph", ":Gitsigns preview_hunk<cr>", opts)
 vim.keymap.set("n", "[c", function()
   require("treesitter-context").go_to_context()
 end, { silent = true })
-
