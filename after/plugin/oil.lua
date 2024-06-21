@@ -44,6 +44,5 @@ vim.keymap.set('n', '-', function()
 
   if oil.get_cursor_entry() then
     oil.open_preview()
-    -- oil.select({ preview = true })
   end
 end)

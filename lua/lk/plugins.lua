@@ -24,6 +24,8 @@ require('lazy').setup({
 
   -- theme
   "Mofiqul/adwaita.nvim",
+  "markvincze/panda-vim",
+  "arzg/vim-colors-xcode",
 
   -- lsp
   {
