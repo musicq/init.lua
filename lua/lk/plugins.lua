@@ -18,14 +18,21 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-  "nvim-lua/popup.nvim",   -- An implementation of the Popup API from vim in Neovim
-  "nvim-lua/plenary.nvim", -- Useful lua functions used ny lots of plugins
-  "windwp/nvim-autopairs", -- Autopairs, integrates with both cmp and treesitter
+  "nvim-lua/popup.nvim",         -- An implementation of the Popup API from vim in Neovim
+  "nvim-lua/plenary.nvim",       -- Useful lua functions used ny lots of plugins
+  "windwp/nvim-autopairs",       -- Autopairs, integrates with both cmp and treesitter
+  'nvim-tree/nvim-web-devicons', -- optional
 
   -- theme
   "Mofiqul/adwaita.nvim",
   "markvincze/panda-vim",
   "arzg/vim-colors-xcode",
+  {
+    "2nthony/vitesse.nvim",
+    dependencies = {
+      "tjdevries/colorbuddy.nvim"
+    }
+  },
 
   -- lsp
   {
@@ -44,6 +51,7 @@ require('lazy').setup({
     version = '^4', -- Recommended
     ft = { 'rust' },
   },
+  'nvimdev/lspsaga.nvim',
 
   -- formatter
   {
@@ -61,8 +69,6 @@ require('lazy').setup({
   {
     'stevearc/oil.nvim',
     opts = {},
-    -- Optional dependencies
-    dependencies = { "nvim-tree/nvim-web-devicons" },
   },
 
   -- Telescope
