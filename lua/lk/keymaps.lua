@@ -69,7 +69,7 @@ keymap("t", "<c-l>", "<c-\\><c-n><c-w>l", term_opts)
 -- keymap("n", "<leader>f", "<cmd>Telescope find_files<cr>", opts)
 keymap("n", "<leader>pf", "<cmd>lua require'telescope.builtin'.find_files()<cr>", opts)
 keymap("n", "<leader>pg", "<cmd>Telescope live_grep<cr>", opts)
-keymap("n", "<leader>l", "<cmd>Telescope buffers<cr>", opts)
+keymap("n", "<leader>o", "<cmd>Telescope buffers<cr>", opts)
 -- keymap("n", "<leader>sf", "<cmd>Telescope current_buffer_fuzzy_find<cr>", opts)
 
 -- Nvimtree
@@ -86,6 +86,6 @@ vim.keymap.set("n", "[c", function()
 end, { silent = true })
 
 -- lspsaga
-keymap("n", "<F4>", "<cmd>Lspsaga code_action<cr>", opts)
+keymap("n", "g.", "<cmd>Lspsaga code_action<cr>", opts)
 keymap("n", "<leader>pk", "<cmd>Lspsaga peek_definition<cr>", opts)
 keymap("n", "<leader>fi", "<cmd>Lspsaga finder<cr>", opts)

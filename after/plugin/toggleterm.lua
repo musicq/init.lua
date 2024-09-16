@@ -27,9 +27,25 @@ toggleterm.setup({
   },
 })
 
+-- Define a variable to track the fullscreen state and layout file
+local is_full_screen = false
+local previous_width = vim.o.columns * 0.4
+
+function ToggleFullScreen()
+  if is_full_screen then
+    vim.cmd('vertical resize' .. previous_width)
+    vim.cmd('wincmd =')
+    is_full_screen = false
+  else
+    vim.cmd('vertical resize' .. vim.o.columns)
+    is_full_screen = true
+  end
+end
+
 function _G.set_terminal_keymaps()
   local opts = { noremap = true }
   vim.api.nvim_buf_set_keymap(0, "t", "<C-\\>", [[<C-\><C-n>]], opts)
+  vim.api.nvim_buf_set_keymap(0, "t", "<C-m>", '<cmd>lua ToggleFullScreen()<CR>', opts)
 end
 
 vim.cmd("autocmd! TermOpen term://* lua set_terminal_keymaps()")

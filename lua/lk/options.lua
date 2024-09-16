@@ -21,7 +21,7 @@ local options = {
   scrolloff = 8,
   signcolumn = "yes",
   updatetime = 50,
-  colorcolumn = "80",
+  colorcolumn = "0",
   cursorline = true,
   foldmethod = "indent",
   foldenable = false
@@ -32,4 +32,3 @@ vim.opt.isfname:append("@-@")
 for k, v in pairs(options) do
   vim.opt[k] = v
 end
-
