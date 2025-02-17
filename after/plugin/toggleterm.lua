@@ -5,7 +5,7 @@ end
 
 toggleterm.setup({
   size = 100,
-  open_mapping = [[<M-3>]],
+  open_mapping = [[<C-`>]],
   hide_numbers = true,
   shade_filetypes = {},
   shade_terminals = true,
@@ -34,7 +34,6 @@ local previous_width = vim.o.columns * 0.4
 function ToggleFullScreen()
   if is_full_screen then
     vim.cmd('vertical resize' .. previous_width)
-    vim.cmd('wincmd =')
     is_full_screen = false
   else
     vim.cmd('vertical resize' .. vim.o.columns)
@@ -45,7 +44,7 @@ end
 function _G.set_terminal_keymaps()
   local opts = { noremap = true }
   vim.api.nvim_buf_set_keymap(0, "t", "<C-\\>", [[<C-\><C-n>]], opts)
-  vim.api.nvim_buf_set_keymap(0, "t", "<C-m>", '<cmd>lua ToggleFullScreen()<CR>', opts)
+  -- vim.api.nvim_buf_set_keymap(0, "t", "<C-m>", '<cmd>lua ToggleFullScreen()<CR>', opts)
 end
 
 vim.cmd("autocmd! TermOpen term://* lua set_terminal_keymaps()")
