@@ -48,3 +48,5 @@ if colorscheme == "adwaita" then
 elseif colorscheme == 'vitesse' then
   enrollVitesse()
 end
+
+vim.defer_fn(enrollVitesse, 100)
