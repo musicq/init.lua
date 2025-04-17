@@ -15,7 +15,7 @@ require('mason-lspconfig').setup({
     -- "prettierd",
     "rust_analyzer",
     "tailwindcss",
-    "tsserver",
+    -- "tsserver",
     "yamlls",
     "taplo"
   },
