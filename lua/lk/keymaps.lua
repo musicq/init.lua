@@ -2,6 +2,14 @@ local opts = { noremap = true, silent = true }
 local term_opts = { silent = true }
 local keymap = vim.api.nvim_set_keymap
 
+local function cancel_hlsearch()
+  if vim.v.hlsearch == 1 then
+    vim.cmd("nohlsearch")
+  else
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+  end
+end
+
 keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -19,6 +27,10 @@ keymap("n", "<leader>y", [["+y]], opts)
 keymap("v", "<leader>y", [["+y]], opts)
 keymap("n", "<leader>nl", ":nohlsearch<cr>", opts)
 keymap("n", "Y", "Vy", opts)
+
+-- cancel search highlight when press <ESC> or <C-[>
+vim.keymap.set("n", "<Esc>", cancel_hlsearch, { noremap = true, silent = true })
+vim.keymap.set("n", "<C-[>", cancel_hlsearch, { noremap = true, silent = true })
 
 keymap("i", "<c-b>", "<Left>", opts)
 keymap("i", "<c-f>", "<Right>", opts)
@@ -79,6 +91,7 @@ keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
 -- Gitsigns
 keymap("n", "<leader>bl", ":Gitsigns blame_line<cr>", opts)
 keymap("n", "<leader>ph", ":Gitsigns preview_hunk<cr>", opts)
+keymap("n", "<leader>pz", ":Gitsigns reset_hunk<cr>", opts)
 
 -- Treesitter Context
 vim.keymap.set("n", "[c", function()

@@ -1,3 +1,8 @@
+local status_ok, gitsigns = pcall(require, "illuminate")
+if not status_ok then
+  return
+end
+
 -- default configuration
 require('illuminate').configure({
   -- providers: provider used to get references in the buffer, ordered by priority
@@ -39,7 +44,7 @@ require('illuminate').configure({
   under_cursor = true,
   -- large_file_cutoff: number of lines at which to use large_file_config
   -- The `under_cursor` option is disabled when this cutoff is hit
-  large_file_cutoff = nil,
+  large_file_cutoff = 10000,
   -- large_file_config: config to use for large files (based on large_file_cutoff).
   -- Supports the same keys passed to .configure
   -- If nil, vim-illuminate will be disabled for large files.
@@ -52,6 +57,8 @@ require('illuminate').configure({
   should_enable = function(bufnr) return true end,
   -- case_insensitive_regex: sets regex case sensitivity
   case_insensitive_regex = false,
+  -- disable_keymaps: disable default keymaps
+  disable_keymaps = false,
 })
 
 -- vim.cmd [[
@@ -74,4 +81,3 @@ vim.api.nvim_create_autocmd({ "ColorScheme" }, {
     vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { link = "Visual" })
   end,
 })
-

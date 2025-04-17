@@ -32,6 +32,15 @@ local function enrollAdwaita()
 end
 
 local function enrollVitesse()
+  local hl = require("vitesse.util").hl
+
+  hl("CursorLine", { bg = "#111111" })
+
+  -- set Illuminate style
+  hl('IlluminatedWordWord', { bg = "#222222" })
+  hl("IlluminatedWordText", { bg = "#222222" })
+  hl("IlluminatedWordRead", { bg = "#222222" })
+  hl("IlluminatedWordWrite", { bg = "#222222" })
 end
 
 if colorscheme == "adwaita" then
