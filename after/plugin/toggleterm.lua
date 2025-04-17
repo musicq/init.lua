@@ -30,15 +30,21 @@ toggleterm.setup({
 function _G.set_terminal_keymaps()
   local opts = { noremap = true }
   vim.api.nvim_buf_set_keymap(0, "t", "<C-\\>", [[<C-\><C-n>]], opts)
+
   -- Terminal mode mapping: <C-m> to toggle fullscreen
-  vim.api.nvim_buf_set_keymap(0, "t", "<C-m>", [[<C-\><C-n>:lua _ToggleCurrentTerminalFullscreen()<CR>i]], {
+  vim.api.nvim_buf_set_keymap(0, "t", "<M-m>", [[<C-\><C-n>:lua _ToggleCurrentTerminalFullscreen()<CR>i]], {
     noremap = true,
     silent = true,
     desc = "Toggle terminal fullscreen",
   })
 end
 
-vim.cmd("autocmd! TermOpen term://* lua set_terminal_keymaps()")
+vim.api.nvim_create_autocmd("TermOpen", {
+  pattern = "term://*",
+  callback = function()
+    set_terminal_keymaps()
+  end
+})
 
 local Terminal = require("toggleterm.terminal").Terminal
 local node = Terminal:new({ cmd = "node", hidden = true })
@@ -46,13 +52,6 @@ local node = Terminal:new({ cmd = "node", hidden = true })
 function _NODE_TOGGLE()
   node:toggle()
 end
-
-local term_fullscreen_state = {
-  win_id = nil,
-  prev_height = nil,
-  prev_width = nil,
-  active = false,
-}
 
 local term_fullscreen_state = {
   win_id = nil,
