@@ -102,3 +102,6 @@ end, { silent = true })
 keymap("n", "g.", "<cmd>Lspsaga code_action<cr>", opts)
 keymap("n", "<leader>pk", "<cmd>Lspsaga peek_definition<cr>", opts)
 keymap("n", "<leader>fi", "<cmd>Lspsaga finder<cr>", opts)
+
+-- outline
+keymap("n", "gs", "<cmd>AerialNavToggle<cr>", opts)
