@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nvim --startuptime /tmp/nvim-startup-new.log -c 'qa!')",
+      "Bash(nvim:*)"
+    ]
+  }
+}

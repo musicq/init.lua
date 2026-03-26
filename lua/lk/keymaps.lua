@@ -78,11 +78,7 @@ keymap("t", "<c-j>", "<c-\\><c-n><c-w>j", term_opts)
 keymap("t", "<c-k>", "<c-\\><c-n><c-w>k", term_opts)
 keymap("t", "<c-l>", "<c-\\><c-n><c-w>l", term_opts)
 
--- keymap("n", "<leader>f", "<cmd>Telescope find_files<cr>", opts)
-keymap("n", "<leader>pf", "<cmd>lua require'telescope.builtin'.find_files()<cr>", opts)
-keymap("n", "<leader>pg", "<cmd>Telescope live_grep<cr>", opts)
-keymap("n", "<leader>o", "<cmd>Telescope buffers<cr>", opts)
--- keymap("n", "<leader>sf", "<cmd>Telescope current_buffer_fuzzy_find<cr>", opts)
+-- Telescope keymaps are in plugins.lua (lazy keys)
 
 -- Nvimtree
 keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
@@ -103,5 +99,4 @@ keymap("n", "g.", "<cmd>Lspsaga code_action<cr>", opts)
 keymap("n", "<leader>pk", "<cmd>Lspsaga peek_definition<cr>", opts)
 keymap("n", "<leader>fi", "<cmd>Lspsaga finder<cr>", opts)
 
--- outline
-keymap("n", "gs", "<cmd>AerialNavToggle<cr>", opts)
+-- outline keymap is in plugins.lua (lazy keys)
