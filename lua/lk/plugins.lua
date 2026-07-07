@@ -36,11 +36,6 @@ require('lazy').setup({
 
   -- lsp
   {
-    'VonHeikemen/lsp-zero.nvim',
-    branch = 'v3.x',
-    lazy = true,
-  },
-  {
     'williamboman/mason.nvim',
     cmd = "Mason",
     config = function()
@@ -50,40 +45,56 @@ require('lazy').setup({
   {
     'williamboman/mason-lspconfig.nvim',
     event = { "BufReadPre", "BufNewFile" },
-    dependencies = { 'williamboman/mason.nvim', 'neovim/nvim-lspconfig', 'VonHeikemen/lsp-zero.nvim' },
+    dependencies = { 'williamboman/mason.nvim', 'neovim/nvim-lspconfig', 'hrsh7th/cmp-nvim-lsp' },
     config = function()
-      local lsp_zero = require('lsp-zero')
-      lsp_zero.on_attach(function(client, bufnr)
-        lsp_zero.default_keymaps({ buffer = bufnr })
-        vim.cmd([[command! Format execute "lua vim.lsp.buf.format()"]])
-      end)
-      lsp_zero.format_on_save({
-        format_opts = { async = false, timeout_ms = 10000 },
-        servers = {
-          ['lua_ls'] = { 'lua' },
-          ['rust_analyzer'] = { 'rust' },
-          ['eslint_d'] = { 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
+      vim.lsp.config("*", {
+        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+      })
+
+      vim.lsp.config("lua_ls", {
+        settings = {
+          Lua = {
+            diagnostics = { globals = { "vim" } },
+            workspace = { checkThirdParty = false },
+          },
         },
       })
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("lk_lsp", { clear = true }),
+        callback = function(event)
+          local function map(mode, lhs, rhs, desc)
+            vim.keymap.set(mode, lhs, rhs, { buffer = event.buf, silent = true, desc = desc })
+          end
+
+          map("n", "K", vim.lsp.buf.hover, "LSP hover")
+          map("n", "gd", vim.lsp.buf.definition, "Go to definition")
+          map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
+          map("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
+          map("n", "gr", vim.lsp.buf.references, "Go to references")
+          map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+          map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+          map("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
+          map("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Previous diagnostic")
+          map("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, "Next diagnostic")
+        end,
+      })
+
       require('mason-lspconfig').setup({
         ensure_installed = {
           "clangd", "cssls", "cssmodules_ls", "eslint", "gopls",
           "lua_ls", "rust_analyzer", "tailwindcss", "yamlls", "taplo",
         },
-        handlers = {
-          function(server_name)
-            require('lspconfig')[server_name].setup({})
-          end,
-        },
+        automatic_enable = { exclude = { "rust_analyzer" } },
       })
     end,
   },
   { 'neovim/nvim-lspconfig', lazy = true },
-  { 'hrsh7th/cmp-nvim-lsp', lazy = true },
+  { 'hrsh7th/cmp-nvim-lsp',  lazy = true },
   {
     'hrsh7th/nvim-cmp',
     event = "InsertEnter",
-    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'VonHeikemen/lsp-zero.nvim' },
+    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip' },
     config = function()
       local cmp = require('cmp')
       local check_backspace = function()
@@ -143,7 +154,7 @@ require('lazy').setup({
       })
     end,
   },
-  { 'L3MON4D3/LuaSnip', lazy = true },
+  { 'L3MON4D3/LuaSnip',                            lazy = true },
   {
     'mrcjkb/rustaceanvim',
     version = '^4',
@@ -152,6 +163,11 @@ require('lazy').setup({
   {
     'nvimdev/lspsaga.nvim',
     cmd = "Lspsaga",
+    keys = {
+      { "g.",        "<cmd>Lspsaga code_action<cr>",     desc = "Code action" },
+      { "<leader>pk", "<cmd>Lspsaga peek_definition<cr>", desc = "Peek definition" },
+      { "<leader>fi", "<cmd>Lspsaga finder<cr>",          desc = "LSP finder" },
+    },
     config = function()
       require('lspsaga').setup({ ui = { code_action = '' } })
     end,
@@ -161,6 +177,17 @@ require('lazy').setup({
   {
     'stevearc/conform.nvim',
     event = { "BufReadPre", "BufNewFile" },
+    cmd = "Format",
+    keys = {
+      {
+        "<m-s-f>",
+        function()
+          require("conform").format({ lsp_format = "fallback", async = false, timeout_ms = 1000 })
+        end,
+        mode = { "n", "v" },
+        desc = "Format file or range",
+      },
+    },
     config = function()
       local conform = require('conform')
       conform.setup({
@@ -179,11 +206,16 @@ require('lazy').setup({
           lua = { "stylua" },
           python = { "isort", "black" },
         },
-        format_on_save = { lsp_fallback = true, async = false, timeout_ms = 1000 },
-        vim.keymap.set({ "n", "v" }, "<m-s-f>", function()
-          conform.format({ lsp_fallback = true, async = false, timeout_ms = 1000 })
-        end, { desc = "Format file or range (in visual mode)" })
+        format_on_save = { lsp_format = "fallback", async = false, timeout_ms = 1000 },
       })
+
+      vim.api.nvim_create_user_command("Format", function(args)
+        local range = nil
+        if args.range ~= 0 then
+          range = { start = { args.line1, 0 }, ["end"] = { args.line2, 0 } }
+        end
+        conform.format({ lsp_format = "fallback", async = false, timeout_ms = 1000, range = range })
+      end, { range = true })
     end,
   },
 
@@ -251,8 +283,8 @@ require('lazy').setup({
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope-media-files.nvim" },
     keys = {
       { "<leader>pf", "<cmd>lua require'telescope.builtin'.find_files()<cr>", desc = "Find files" },
-      { "<leader>pg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
-      { "<leader>o", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
+      { "<leader>pg", "<cmd>Telescope live_grep<cr>",                         desc = "Live grep" },
+      { "<leader>o",  "<cmd>Telescope buffers<cr>",                           desc = "Buffers" },
     },
     config = function()
       local telescope = require("telescope")
@@ -326,6 +358,7 @@ require('lazy').setup({
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "master",
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     config = function()
@@ -347,6 +380,13 @@ require('lazy').setup({
   {
     "nvim-treesitter/nvim-treesitter-context",
     event = { "BufReadPost", "BufNewFile" },
+    keys = {
+      {
+        "[c",
+        function() require("treesitter-context").go_to_context() end,
+        desc = "Go to treesitter context",
+      },
+    },
     config = function()
       require('treesitter-context').setup({
         enable = true,
@@ -391,19 +431,19 @@ require('lazy').setup({
           theme = "auto",
           component_separators = { left = "", right = "" },
           section_separators = { left = "", right = "" },
-          disabled_filetypes = { "dashboard", "NvimTree", "Outline" },
+          disabled_filetypes = { "dashboard", "oil", "Outline" },
           always_divide_middle = true,
         },
         sections = {
           lualine_a = {
-            { "branch", icons_enabled = true, icon = "" },
+            { "branch",      icons_enabled = true,            icon = "" },
             { "diagnostics", sources = { "nvim_diagnostic" }, sections = { "error", "warn" }, symbols = { error = " ", warn = " " }, colored = false, update_in_insert = false, always_visible = true },
           },
           lualine_b = { { "mode", fmt = function(str) return "-- " .. str .. " --" end } },
           lualine_c = { function() return vim.fn.expand("%:p") end },
           lualine_x = {
-            { "diff", colored = false, symbols = { added = " ", modified = " ", removed = " " }, cond = hide_in_width },
-            function() return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth") end,
+            { "diff",     colored = false,       symbols = { added = " ", modified = " ", removed = " " }, cond = hide_in_width },
+            function() return "spaces: " .. vim.bo.shiftwidth end,
             "encoding",
             { "filetype", icons_enabled = false, icon = nil },
           },
@@ -437,6 +477,11 @@ require('lazy').setup({
   {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPre", "BufNewFile" },
+    keys = {
+      { "<leader>bl", "<cmd>Gitsigns blame_line<cr>",   desc = "Git blame line" },
+      { "<leader>ph", "<cmd>Gitsigns preview_hunk<cr>", desc = "Git preview hunk" },
+      { "<leader>pz", "<cmd>Gitsigns reset_hunk<cr>",   desc = "Git reset hunk" },
+    },
     config = function()
       require("gitsigns").setup({
         signs = {
@@ -550,7 +595,7 @@ require('lazy').setup({
     event = { "BufReadPost", "BufNewFile" },
     config = function()
       require('illuminate').configure({
-        providers = { 'lsp', 'treesitter', 'regex' },
+        providers = { 'lsp', 'regex' },
         delay = 100,
         filetypes_denylist = { 'dirbuf', 'dirvish', 'fugitive' },
         under_cursor = true,
@@ -591,18 +636,18 @@ require('lazy').setup({
     end,
   },
 
-  { "mbbill/undotree", cmd = "UndotreeToggle" },
+  { "mbbill/undotree",    cmd = "UndotreeToggle" },
 
   -- hop
   {
     'smoka7/hop.nvim',
     version = "*",
     keys = {
-      { 'f', function() require('hop').hint_char1({ direction = require('hop.hint').HintDirection.AFTER_CURSOR, current_line_only = true }) end, mode = '', remap = true },
-      { 'F', function() require('hop').hint_char1({ direction = require('hop.hint').HintDirection.BEFORE_CURSOR, current_line_only = true }) end, mode = '', remap = true },
-      { 't', function() require('hop').hint_char1({ direction = require('hop.hint').HintDirection.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, mode = '', remap = true },
-      { 'T', function() require('hop').hint_char1({ direction = require('hop.hint').HintDirection.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, mode = '', remap = true },
-      { '<leader>j', function() require('hop').hint_char1() end, desc = "Hop char1" },
+      { 'f',         function() require('hop').hint_char1({ direction = require('hop.hint').HintDirection.AFTER_CURSOR, current_line_only = true }) end,                   mode = '',         remap = true },
+      { 'F',         function() require('hop').hint_char1({ direction = require('hop.hint').HintDirection.BEFORE_CURSOR, current_line_only = true }) end,                  mode = '',         remap = true },
+      { 't',         function() require('hop').hint_char1({ direction = require('hop.hint').HintDirection.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, mode = '',         remap = true },
+      { 'T',         function() require('hop').hint_char1({ direction = require('hop.hint').HintDirection.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, mode = '',         remap = true },
+      { '<leader>j', function() require('hop').hint_char1() end,                                                                                                           desc = "Hop char1" },
     },
     opts = {},
   },
@@ -611,12 +656,12 @@ require('lazy').setup({
   {
     "ThePrimeagen/harpoon",
     keys = {
-      { "<leader>a", function() require("harpoon.mark").add_file() end, desc = "Harpoon add file" },
-      { "<C-q>", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Harpoon menu" },
-      { "<C-t>", function() require("harpoon.ui").nav_file(1) end, desc = "Harpoon file 1" },
-      { "<C-h>", function() require("harpoon.ui").nav_file(2) end, desc = "Harpoon file 2" },
-      { "<C-n>", function() require("harpoon.ui").nav_file(3) end, desc = "Harpoon file 3" },
-      { "<C-s>", function() require("harpoon.ui").nav_file(4) end, desc = "Harpoon file 4" },
+      { "<leader>a", function() require("harpoon.mark").add_file() end,        desc = "Harpoon add file" },
+      { "<C-q>",     function() require("harpoon.ui").toggle_quick_menu() end, desc = "Harpoon menu" },
+      { "<C-t>",     function() require("harpoon.ui").nav_file(1) end,         desc = "Harpoon file 1" },
+      { "<C-h>",     function() require("harpoon.ui").nav_file(2) end,         desc = "Harpoon file 2" },
+      { "<C-n>",     function() require("harpoon.ui").nav_file(3) end,         desc = "Harpoon file 3" },
+      { "<C-s>",     function() require("harpoon.ui").nav_file(4) end,         desc = "Harpoon file 4" },
     },
     dependencies = { "nvim-lua/plenary.nvim" },
   },
@@ -754,63 +799,6 @@ require('lazy').setup({
   },
 
   'nvim-tree/nvim-web-devicons',
-
-  -- avante
-  {
-    "yetone/avante.nvim",
-    build = vim.fn.has("win32") ~= 0
-        and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-        or "make",
-    event = "VeryLazy",
-    version = false,
-    ---@module 'avante'
-    ---@type avante.Config
-    opts = {
-      instructions_file = "avante.md",
-      provider = "claude",
-      providers = {
-        claude = {
-          endpoint = "https://api.anthropic.com",
-          model = "claude-sonnet-4-20250514",
-          timeout = 30000,
-          extra_request_body = { temperature = 0.75, max_tokens = 20480 },
-        },
-        moonshot = {
-          endpoint = "https://api.moonshot.ai/v1",
-          model = "kimi-k2-0711-preview",
-          timeout = 30000,
-          extra_request_body = { temperature = 0.75, max_tokens = 32768 },
-        },
-      },
-    },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      "nvim-mini/mini.pick",
-      "nvim-telescope/telescope.nvim",
-      "hrsh7th/nvim-cmp",
-      "ibhagwan/fzf-lua",
-      "stevearc/dressing.nvim",
-      "folke/snacks.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "zbirenbaum/copilot.lua",
-      {
-        "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
-        opts = {
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = { insert_mode = true },
-            use_absolute_path = true,
-          },
-        },
-      },
-      {
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = { file_types = { "markdown", "Avante" } },
-        ft = { "markdown", "Avante" },
-      },
-    },
-  },
+}, {
+  rocks = { enabled = false },
 })

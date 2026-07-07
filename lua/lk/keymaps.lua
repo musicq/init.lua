@@ -78,25 +78,4 @@ keymap("t", "<c-j>", "<c-\\><c-n><c-w>j", term_opts)
 keymap("t", "<c-k>", "<c-\\><c-n><c-w>k", term_opts)
 keymap("t", "<c-l>", "<c-\\><c-n><c-w>l", term_opts)
 
--- Telescope keymaps are in plugins.lua (lazy keys)
-
--- Nvimtree
-keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
--- keymap("n", "<M-S-f>", ":Format<cr>", opts)
-
--- Gitsigns
-keymap("n", "<leader>bl", ":Gitsigns blame_line<cr>", opts)
-keymap("n", "<leader>ph", ":Gitsigns preview_hunk<cr>", opts)
-keymap("n", "<leader>pz", ":Gitsigns reset_hunk<cr>", opts)
-
--- Treesitter Context
-vim.keymap.set("n", "[c", function()
-  require("treesitter-context").go_to_context()
-end, { silent = true })
-
--- lspsaga
-keymap("n", "g.", "<cmd>Lspsaga code_action<cr>", opts)
-keymap("n", "<leader>pk", "<cmd>Lspsaga peek_definition<cr>", opts)
-keymap("n", "<leader>fi", "<cmd>Lspsaga finder<cr>", opts)
-
--- outline keymap is in plugins.lua (lazy keys)
+-- Plugin keymaps are in plugins.lua (lazy keys)
