@@ -60,6 +60,18 @@ require('lazy').setup({
         },
       })
 
+      vim.lsp.config("ts_ls", {
+        init_options = {
+          hostInfo = "neovim",
+          tsserver = {
+            fallbackPath = vim.fs.joinpath(
+              vim.fn.expand("$HOME"),
+              ".npm-packages/lib/node_modules/typescript/lib/tsserver.js"
+            ),
+          },
+        },
+      })
+
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("lk_lsp", { clear = true }),
         callback = function(event)
@@ -83,7 +95,7 @@ require('lazy').setup({
       require('mason-lspconfig').setup({
         ensure_installed = {
           "clangd", "cssls", "cssmodules_ls", "eslint", "gopls",
-          "lua_ls", "rust_analyzer", "tailwindcss", "yamlls", "taplo",
+          "lua_ls", "rust_analyzer", "tailwindcss", "ts_ls", "yamlls", "taplo",
         },
         automatic_enable = { exclude = { "rust_analyzer" } },
       })
@@ -358,22 +370,34 @@ require('lazy').setup({
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",
+    lazy = false,
     build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
     config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "lua", "vim", "vimdoc", "javascript", "typescript", "tsx",
-          "rust", "go", "python", "html", "css", "json", "yaml",
-          "toml", "bash", "c", "cpp", "markdown", "markdown_inline",
+      local treesitter = require("nvim-treesitter")
+      local languages = {
+        "lua", "vim", "vimdoc", "javascript", "typescript", "tsx",
+        "rust", "go", "python", "html", "css", "json", "yaml",
+        "toml", "bash", "c", "cpp", "markdown", "markdown_inline",
+      }
+
+      treesitter.setup()
+      treesitter.install(languages)
+
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("lk_treesitter", { clear = true }),
+        pattern = {
+          "lua", "vim", "help", "javascript", "javascriptreact",
+          "typescript", "typescriptreact", "rust", "go", "python",
+          "html", "css", "json", "yaml", "toml", "sh", "c", "cpp",
+          "markdown",
         },
-        sync_install = false,
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-        },
-        indent = { enable = true, disable = { "yaml" } },
+        callback = function(event)
+          local started = pcall(vim.treesitter.start, event.buf)
+          if started and event.match ~= "yaml" then
+            vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
       })
     end,
   },
