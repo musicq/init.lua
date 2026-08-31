@@ -27,10 +27,9 @@ require('lazy').setup({
       vim.cmd([[colorscheme vitesse]])
       local hl = require("vitesse.util").hl
       hl("CursorLine", { bg = "#111111" })
-      hl('IlluminatedWordWord', { bg = "#222222" })
-      hl("IlluminatedWordText", { bg = "#222222" })
-      hl("IlluminatedWordRead", { bg = "#222222" })
-      hl("IlluminatedWordWrite", { bg = "#222222" })
+      hl("LspReferenceText", { bg = "#222222" })
+      hl("LspReferenceRead", { bg = "#222222" })
+      hl("LspReferenceWrite", { bg = "#222222" })
     end,
   },
 
@@ -45,12 +44,8 @@ require('lazy').setup({
   {
     'williamboman/mason-lspconfig.nvim',
     event = { "BufReadPre", "BufNewFile" },
-    dependencies = { 'williamboman/mason.nvim', 'neovim/nvim-lspconfig', 'hrsh7th/cmp-nvim-lsp' },
+    dependencies = { 'williamboman/mason.nvim', 'neovim/nvim-lspconfig' },
     config = function()
-      vim.lsp.config("*", {
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
-      })
-
       vim.lsp.config("lua_ls", {
         settings = {
           Lua = {
@@ -60,21 +55,13 @@ require('lazy').setup({
         },
       })
 
-      vim.lsp.config("ts_ls", {
-        init_options = {
-          hostInfo = "neovim",
-          tsserver = {
-            fallbackPath = vim.fs.joinpath(
-              vim.fn.expand("$HOME"),
-              ".npm-packages/lib/node_modules/typescript/lib/tsserver.js"
-            ),
-          },
-        },
-      })
+      local highlight_group = vim.api.nvim_create_augroup("lk_lsp_highlight", { clear = true })
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("lk_lsp", { clear = true }),
         callback = function(event)
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+
           local function map(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, { buffer = event.buf, silent = true, desc = desc })
           end
@@ -89,84 +76,41 @@ require('lazy').setup({
           map("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
           map("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Previous diagnostic")
           map("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, "Next diagnostic")
+
+          if client and client:supports_method("textDocument/completion", event.buf) then
+            vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+            map("i", "<C-,>", vim.lsp.completion.get, "LSP completion")
+          end
+
+          local supports_document_highlight = client
+            and client:supports_method("textDocument/documentHighlight", event.buf)
+
+          if supports_document_highlight and not vim.b[event.buf].lsp_document_highlight then
+            vim.b[event.buf].lsp_document_highlight = true
+            vim.api.nvim_create_autocmd("CursorHold", {
+              group = highlight_group,
+              buffer = event.buf,
+              callback = vim.lsp.buf.document_highlight,
+            })
+            vim.api.nvim_create_autocmd("CursorMoved", {
+              group = highlight_group,
+              buffer = event.buf,
+              callback = vim.lsp.buf.clear_references,
+            })
+          end
         end,
       })
 
       require('mason-lspconfig').setup({
         ensure_installed = {
           "clangd", "cssls", "cssmodules_ls", "eslint", "gopls",
-          "lua_ls", "rust_analyzer", "tailwindcss", "ts_ls", "yamlls", "taplo",
+          "lua_ls", "rust_analyzer", "tailwindcss", "tsc", "yamlls", "taplo",
         },
         automatic_enable = { exclude = { "rust_analyzer" } },
       })
     end,
   },
   { 'neovim/nvim-lspconfig', lazy = true },
-  { 'hrsh7th/cmp-nvim-lsp',  lazy = true },
-  {
-    'hrsh7th/nvim-cmp',
-    event = "InsertEnter",
-    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip' },
-    config = function()
-      local cmp = require('cmp')
-      local check_backspace = function()
-        local col = vim.fn.col(".") - 1
-        return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
-      end
-      cmp.setup({
-        mapping = cmp.mapping.preset.insert({
-          ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-d>'] = cmp.mapping.scroll_docs(4),
-          ["<C-k>"] = cmp.mapping.select_prev_item(),
-          ["<C-j>"] = cmp.mapping.select_next_item(),
-          ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c" }),
-          ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(1), { "i", "c" }),
-          ["<C-,>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-          ["<C-y>"] = cmp.config.disable,
-          ["<C-e>"] = cmp.mapping({ i = cmp.mapping.abort(), c = cmp.mapping.close() }),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif check_backspace() then
-              fallback()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<C-p>"] = cmp.mapping(function()
-            if cmp.visible() then
-              cmp.select_prev_item({ behavior = "select" })
-            else
-              cmp.complete()
-            end
-          end),
-          ["<C-n>"] = cmp.mapping(function()
-            if cmp.visible() then
-              cmp.select_next_item({ behavior = "select" })
-            else
-              cmp.complete()
-            end
-          end),
-        }),
-        snippet = {
-          expand = function(args)
-            require('luasnip').lsp_expand(args.body)
-          end,
-        },
-        confirm_opts = { behavior = cmp.ConfirmBehavior.Replace, select = false },
-        window = { documentation = cmp.config.window.bordered() },
-      })
-    end,
-  },
-  { 'L3MON4D3/LuaSnip',                            lazy = true },
   {
     'mrcjkb/rustaceanvim',
     version = '^4',
@@ -188,7 +132,7 @@ require('lazy').setup({
   -- formatter
   {
     'stevearc/conform.nvim',
-    event = { "BufReadPre", "BufNewFile" },
+    event = "BufWritePre",
     cmd = "Format",
     keys = {
       {
@@ -231,28 +175,6 @@ require('lazy').setup({
     end,
   },
 
-  -- linter
-  {
-    "mfussenegger/nvim-lint",
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      local lint = require("lint")
-      lint.linters_by_ft = {
-        javascript = { "eslint_d" },
-        typescript = { "eslint_d" },
-        javascriptreact = { "eslint_d" },
-        typescriptreact = { "eslint_d" },
-        svelte = { "eslint_d" },
-        python = { "pylint" },
-      }
-      vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
-        group = vim.api.nvim_create_augroup("lint", { clear = true }),
-        callback = function() lint.try_lint() end,
-      })
-      vim.keymap.set("n", "<leader>l", function() lint.try_lint() end, { desc = "Trigger linting for current file" })
-    end,
-  },
-
   -- file tree
   {
     'stevearc/oil.nvim',
@@ -292,7 +214,7 @@ require('lazy').setup({
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope-media-files.nvim" },
+    dependencies = { "nvim-lua/plenary.nvim" },
     keys = {
       { "<leader>pf", "<cmd>lua require'telescope.builtin'.find_files()<cr>", desc = "Find files" },
       { "<leader>pg", "<cmd>Telescope live_grep<cr>",                         desc = "Live grep" },
@@ -301,7 +223,6 @@ require('lazy').setup({
     config = function()
       local telescope = require("telescope")
       local actions = require("telescope.actions")
-      telescope.load_extension('media_files')
       telescope.setup({
         defaults = {
           selection_caret = "> ",
@@ -355,12 +276,6 @@ require('lazy').setup({
               ["<PageDown>"] = actions.results_scrolling_down,
               ["?"] = actions.which_key,
             },
-          },
-        },
-        extensions = {
-          media_files = {
-            filetypes = { "png", "webp", "jpg", "jpeg" },
-            find_cmd = "rg",
           },
         },
       })
@@ -427,20 +342,20 @@ require('lazy').setup({
       })
     end,
   },
-
-  -- Comment
   {
-    "numToStr/Comment.nvim",
+    "JoosepAlviste/nvim-ts-context-commentstring",
     event = { "BufReadPost", "BufNewFile" },
-    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
     config = function()
-      require("Comment").setup({
-        ignore = "^$",
-        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-      })
+      require("ts_context_commentstring").setup({ enable_autocmd = false })
+
+      local get_option = vim.filetype.get_option
+      vim.filetype.get_option = function(filetype, option)
+        return option == "commentstring"
+            and require("ts_context_commentstring.internal").calculate_commentstring()
+          or get_option(filetype, option)
+      end
     end,
   },
-  { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
 
   -- Status Bar
   {
@@ -519,8 +434,8 @@ require('lazy').setup({
         numhl = false,
         linehl = false,
         word_diff = false,
-        watch_gitdir = { interval = 1000, follow_files = true },
-        attach_to_untracked = true,
+        watch_gitdir = { follow_files = true },
+        attach_to_untracked = false,
         current_line_blame = false,
         current_line_blame_opts = { virt_text = true, virt_text_pos = "eol", delay = 1000, ignore_whitespace = false },
         sign_priority = 6,
@@ -610,33 +525,6 @@ require('lazy').setup({
           pcall(vim.api.nvim_win_set_width, current_win, full_width)
         end
       end
-    end,
-  },
-
-  -- illuminate
-  {
-    "RRethy/vim-illuminate",
-    event = { "BufReadPost", "BufNewFile" },
-    config = function()
-      require('illuminate').configure({
-        providers = { 'lsp', 'regex' },
-        delay = 100,
-        filetypes_denylist = { 'dirbuf', 'dirvish', 'fugitive' },
-        under_cursor = true,
-        large_file_cutoff = 10000,
-        min_count_to_highlight = 1,
-      })
-      vim.api.nvim_set_hl(0, "IlluminatedWordText", { link = "Visual" })
-      vim.api.nvim_set_hl(0, "IlluminatedWordRead", { link = "Visual" })
-      vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { link = "Visual" })
-      vim.api.nvim_create_autocmd({ "ColorScheme" }, {
-        pattern = { "*" },
-        callback = function()
-          vim.api.nvim_set_hl(0, "IlluminatedWordText", { link = "Visual" })
-          vim.api.nvim_set_hl(0, "IlluminatedWordRead", { link = "Visual" })
-          vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { link = "Visual" })
-        end,
-      })
     end,
   },
 
@@ -816,13 +704,10 @@ require('lazy').setup({
           highlight_grey = "LineNr",
         },
       })
-      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-      local cmp = require("cmp")
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
     end,
   },
 
-  'nvim-tree/nvim-web-devicons',
+  { 'nvim-tree/nvim-web-devicons', lazy = true },
 }, {
   rocks = { enabled = false },
 })
